@@ -1,4 +1,4 @@
-import {Figure, figures} from '../figure';
+import {Figure, figures} from '../lib/figure';
 import {expect} from 'chai';
 
 describe('Figures', () => {

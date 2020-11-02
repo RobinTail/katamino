@@ -6,6 +6,7 @@ type HumanReadablePattern = (HumanReadableFalse | HumanReadableTrue)[];
 
 export interface Shape {
   width: number;
+  getHeight: () => number;
   pattern: boolean[];
 }
 
@@ -17,6 +18,7 @@ export class Figure {
     this.name = name;
     this.shape = {
       width,
+      getHeight: () => pattern.length / width,
       pattern: pattern.map((item) => item === humanReadableTrue)
     };
   }
@@ -26,9 +28,9 @@ export class Figure {
   }
 
   rotate(isClockwise: boolean) {
-    const newWidth = this.shape.pattern.length / this.shape.width;
+    const newWidth = this.shape.getHeight();
     let newPattern: Shape['pattern'] = [];
-    for (let y = 0; y < this.shape.pattern.length / this.shape.width; y++) {
+    for (let y = 0; y < this.shape.getHeight(); y++) {
       for (let x = 0; x < this.shape.width; x++) {
         const srcIndex = y * this.shape.width + x;
         const newIndex = isClockwise ? newWidth * x + newWidth - y - 1 : (this.shape.width - x - 1) * newWidth + y;
@@ -37,13 +39,14 @@ export class Figure {
     }
     this.shape = {
       width: newWidth,
+      getHeight: this.shape.getHeight,
       pattern: newPattern
     };
   }
 
   getPrintablePattern() {
     let result = '';
-    for (let y = 0; y < this.shape.pattern.length / this.shape.width; y++) {
+    for (let y = 0; y < this.shape.getHeight(); y++) {
       result += '\n' + this.shape.pattern
         .slice(y * this.shape.width, (y + 1) * this.shape.width)
         .map((cell) => cell ? humanReadableTrue : humanReadableFalse)
