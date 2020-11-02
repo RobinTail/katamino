@@ -66,11 +66,13 @@ export class Board {
 
   placeFigure(x: number, y: number, figure: Figure) {
     this.placedFigures.push({x, y, figure});
+    figure.lock();
     this._updateReservation();
   }
 
   removeLastFigure(): Figure {
     const placedFigure = this.placedFigures.pop();
+    placedFigure.figure.unlock();
     this._updateReservation();
     return placedFigure.figure;
   }

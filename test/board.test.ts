@@ -56,6 +56,7 @@ describe('Board', () => {
         .concat(Array(20).fill(false)),
       board.getPrintable()
     );
+    expect(figureI.isLocked).to.be.true;
   });
 
   it('can remove last figure', () => {
@@ -64,6 +65,8 @@ describe('Board', () => {
     board.placeFigure(0, 0, figureI);
     const removedFigure = board.removeLastFigure();
     expect(removedFigure).to.be.deep.eq(figureI);
+    expect(removedFigure === figureI).to.be.true;
+    expect(figureI.isLocked).to.be.false;
     expect(board._reserved).to.be.deep.eq(Array(25).fill(false));
   });
 

@@ -15,11 +15,13 @@ export interface Shape {
 export class Figure {
   name: FigureName;
   isFlippable: boolean;
+  isLocked: boolean;
   shape: Shape;
 
   constructor(name: FigureName, width: number, isFlippable: boolean, pattern: HumanReadablePattern) {
     this.name = name;
     this.isFlippable = isFlippable;
+    this.isLocked = false;
     this.shape = {
       width,
       getHeight: () => pattern.length / width,
@@ -27,11 +29,22 @@ export class Figure {
     };
   }
 
+  lock() {
+    this.isLocked = true;
+  }
+
+  unlock() {
+    this.isLocked = false;
+  }
+
   getHumanReadablePattern(): HumanReadablePattern {
     return this.shape.pattern.map((cell) => cell ? humanReadableTrue : humanReadableFalse);
   }
 
   rotate(isClockwise: boolean) {
+    if (this.isLocked) {
+      return;
+    }
     const newWidth = this.shape.getHeight();
     let newPattern: Shape['pattern'] = [];
     for (let y = 0; y < this.shape.getHeight(); y++) {
@@ -49,6 +62,9 @@ export class Figure {
   }
 
   flip() {
+    if (this.isLocked) {
+      return;
+    }
     for (let y = 0; y < this.shape.getHeight(); y++) {
       for (let x = 0; x < this.shape.width / 2; x++) {
         const srcIndex = y * this.shape.width + x;

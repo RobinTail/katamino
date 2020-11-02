@@ -114,7 +114,7 @@ describe('Figures', () => {
       'X',
       'X',
       'X'
-    ], JSON.stringify(figureI.shape));
+    ], figureI.getPrintablePattern());
   });
 
   it('can flip figures 2 cells wide', () => {
@@ -145,6 +145,31 @@ describe('Figures', () => {
     expect(figureF.getHumanReadablePattern()).to.be.deep.equal([
       'X', 'X', '.',
       '.', 'X', 'X',
+      '.', 'X', '.'
+    ], figureF.getPrintablePattern());
+  });
+
+  it('can not rotate locked figure', () => {
+    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
+    figureI.lock();
+    figureI.rotate(true);
+    expect(figureI.shape.width).to.be.equal(5);
+    expect(figureI.getHumanReadablePattern())
+      .to.be.deep.equal(['X', 'X', 'X', 'X', 'X'], figureI.getPrintablePattern());
+  });
+
+  it('can not flip locked figure', () => {
+    const figureF = new Figure('F', 3, true, [
+      '.', 'X', 'X',
+      'X', 'X', '.',
+      '.', 'X', '.'
+    ]);
+    figureF.lock();
+    figureF.flip();
+    expect(figureF.shape.width).to.be.equal(3);
+    expect(figureF.getHumanReadablePattern()).to.be.deep.equal([
+      '.', 'X', 'X',
+      'X', 'X', '.',
       '.', 'X', '.'
     ], figureF.getPrintablePattern());
   });
