@@ -1,4 +1,4 @@
-import {createFigures} from '../lib/figure';
+import {createFigures, Figure} from '../lib/figure';
 import {expect} from 'chai';
 
 describe('Figures', () => {
@@ -138,5 +138,67 @@ describe('Figures', () => {
       '.', 'X', '.'
     ], figureF.getPrintablePattern());
   });
+
+  it('can iterate over possible rotations figure I', () => {
+    const figureI = createFigures().I;
+    let result: string[] = [];
+    figureI.applyAllPossibleRotationsAndFlips((figure) => {
+      result.push(Figure.prototype.getPrintablePattern.apply(figure));
+    });
+    expect(result.length).to.be.eq(2);
+    expect(result.shift()).to.be.eq('\nXXXXX');
+    expect(result.shift()).to.be.eq('\nX\nX\nX\nX\nX');
+    expect(figureI.shape.width).to.be.deep.eq(createFigures().I.shape.width);
+    expect(figureI.shape.pattern).to.be.deep.eq(createFigures().I.shape.pattern);
+  });
+
+  it('can iterate over possible rotations figure X', () => {
+    const figureX = createFigures().X;
+    let result: string[] = [];
+    figureX.applyAllPossibleRotationsAndFlips((figure) => {
+      result.push(Figure.prototype.getPrintablePattern.apply(figure));
+    });
+    expect(result.length).to.be.eq(1);
+    expect(result.shift()).to.be.eq('\n.X.\nXXX\n.X.');
+    expect(figureX.shape.width).to.be.deep.eq(createFigures().X.shape.width);
+    expect(figureX.shape.pattern).to.be.deep.eq(createFigures().X.shape.pattern);
+  });
+
+  it('can iterate over possible rotations figure Z', () => {
+    const figureZ = createFigures().Z;
+    let result: string[] = [];
+    figureZ.applyAllPossibleRotationsAndFlips((figure) => {
+      result.push(Figure.prototype.getPrintablePattern.apply(figure));
+    });
+    expect(result.length).to.be.eq(4);
+    expect(result.shift()).to.be.eq('\nXX.\n.X.\n.XX');
+    expect(result.shift()).to.be.eq('\n..X\nXXX\nX..');
+    expect(result.shift()).to.be.eq('\n.XX\n.X.\nXX.');
+    expect(result.shift()).to.be.eq('\nX..\nXXX\n..X');
+    expect(figureZ.shape.width).to.be.deep.eq(createFigures().Z.shape.width);
+    expect(figureZ.shape.pattern).to.be.deep.eq(createFigures().Z.shape.pattern);
+  });
+
+  it('can iterate over possible rotations figure L', () => {
+    const figureL = createFigures().L;
+    let result: string[] = [];
+    figureL.applyAllPossibleRotationsAndFlips((figure) => {
+      result.push(Figure.prototype.getPrintablePattern.apply(figure));
+    });
+    expect(result.length).to.be.eq(8);
+    expect(result).to.be.deep.eq([
+      '\nXX\nX.\nX.\nX.',
+      '\nX...\nXXXX',
+      '\n.X\n.X\n.X\nXX',
+      '\nXXXX\n...X',
+      '\nXX\n.X\n.X\n.X',
+      '\nXXXX\nX...',
+      '\nX.\nX.\nX.\nXX',
+      '\n...X\nXXXX'
+    ]);
+    expect(figureL.shape.width).to.be.deep.eq(createFigures().L.shape.width);
+    expect(figureL.shape.pattern).to.be.deep.eq(createFigures().L.shape.pattern);
+  });
+
 });
 

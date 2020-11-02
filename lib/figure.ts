@@ -12,19 +12,25 @@ export interface Shape {
   pattern: boolean[];
 }
 
+interface FigureOptions {
+  isRotatable90: boolean;
+  isRotatable180: boolean;
+  isFlippable: boolean;
+}
+
 export class Figure {
   name: FigureName;
-  isFlippable: boolean;
+  options: FigureOptions;
   isLocked: boolean;
   shape: Shape;
 
-  constructor(name: FigureName, width: number, isFlippable: boolean, pattern: HumanReadablePattern) {
+  constructor(name: FigureName, width: number, options: FigureOptions, pattern: HumanReadablePattern) {
     this.name = name;
-    this.isFlippable = isFlippable;
+    this.options = options;
     this.isLocked = false;
     this.shape = {
       width,
-      getHeight: () => pattern.length / width,
+      getHeight: () => pattern.length / this.shape.width,
       pattern: pattern.map((item) => item === humanReadableTrue)
     };
   }
@@ -85,64 +91,150 @@ export class Figure {
     }
     return result;
   }
+
+  applyAllPossibleRotationsAndFlips(cb: (figure: Figure) => any) {
+    if (this.isLocked) {
+      return;
+    }
+    cb(this); // 0
+    if (this.options.isRotatable90) {
+      this.rotate();
+      cb(this); // -90
+      if (this.options.isRotatable180) {
+        this.rotate();
+        cb(this); // -180
+        this.rotate();
+        cb(this); // -270
+        this.rotate(); // back to 0
+      } else {
+        this.rotate(true); // back to 0
+      }
+    }
+    if (this.options.isFlippable) {
+      this.flip();
+      cb(this); // 0
+      if (this.options.isRotatable90) {
+        this.rotate();
+        cb(this); // -90
+        if (this.options.isRotatable180) {
+          this.rotate();
+          cb(this); // -180
+          this.rotate();
+          cb(this); // -270
+          this.rotate(); // back to 0
+        } else {
+          this.rotate(true); // back to 0
+        }
+      }
+      this.flip(); // back initial flip
+    }
+  }
 }
 
-export function createFigures(): Record<FigureName, Figure>{
+export function createFigures(): Record<FigureName, Figure> {
   return {
-    F: new Figure('F', 3, true, [
+    F: new Figure('F', 3, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       '.', 'X', 'X',
       'X', 'X', '.',
       '.', 'X', '.'
     ]),
-    I: new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']),
-    L: new Figure('L', 2, true, [
+    I: new Figure('I', 5, {
+      isFlippable: false,
+      isRotatable90: true,
+      isRotatable180: false
+    }, ['X', 'X', 'X', 'X', 'X']),
+    L: new Figure('L', 2, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', 'X',
       'X', '.',
       'X', '.',
       'X', '.'
     ]),
-    N: new Figure('N', 2, true, [
+    N: new Figure('N', 2, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       '.', 'X',
       'X', 'X',
       'X', '.',
       'X', '.'
     ]),
-    P: new Figure('P', 2, true, [
+    P: new Figure('P', 2, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', 'X',
       'X', 'X',
       'X', '.'
     ]),
-    T: new Figure('T', 3, false, [
+    T: new Figure('T', 3, {
+      isFlippable: false,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', 'X', 'X',
       '.', 'X', '.',
       '.', 'X', '.'
     ]),
-    U: new Figure('U', 3, false, [
+    U: new Figure('U', 3, {
+      isFlippable: false,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', '.', 'X',
       'X', 'X', 'X'
     ]),
-    V: new Figure('V', 3, false, [
+    V: new Figure('V', 3, {
+      isFlippable: false,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', '.', '.',
       'X', '.', '.',
       'X', 'X', 'X'
     ]),
-    W: new Figure('W', 3, false, [
+    W: new Figure('W', 3, {
+      isFlippable: false,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       'X', '.', '.',
       'X', 'X', '.',
       '.', 'X', 'X'
     ]),
-    X: new Figure('X', 3, false, [
+    X: new Figure('X', 3, {
+      isFlippable: false,
+      isRotatable90: false,
+      isRotatable180: false
+    }, [
       '.', 'X', '.',
       'X', 'X', 'X',
       '.', 'X', '.'
     ]),
-    Y: new Figure('Y', 2, true, [
+    Y: new Figure('Y', 2, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: true
+    }, [
       '.', 'X',
       'X', 'X',
       '.', 'X',
       '.', 'X'
     ]),
-    Z: new Figure('Z', 3, true, [
+    Z: new Figure('Z', 3, {
+      isFlippable: true,
+      isRotatable90: true,
+      isRotatable180: false
+    }, [
       'X', 'X', '.',
       '.', 'X', '.',
       '.', 'X', 'X'
