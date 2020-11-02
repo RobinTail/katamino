@@ -83,4 +83,23 @@ describe('Board', () => {
     expect(gapIndexes).includes(1);
     expect(gapIndexes).includes(2);
   });
+
+  it('can find all gaps', () => {
+    const board = new Board(5);
+    const figures = createFigures();
+    const figureY = figures.Y;
+    const figureW = figures.W;
+    if (board.canPlaceFigure(0, 0, figureW)) {
+      board.placeFigure(0, 0, figureW);
+    }
+    if (board.canPlaceFigure(2, 0, figureY)) {
+      board.placeFigure(2, 0, figureY);
+    }
+    const gaps = board.findGaps();
+    expect(gaps.length).to.be.eq(2);
+    expect(gaps).to.be.deep.eq([
+      [1, 2],
+      [4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 16, 17, 12, 10]
+    ]);
+  });
 });

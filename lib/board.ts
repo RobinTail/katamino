@@ -77,6 +77,22 @@ export class Board {
     return placedFigure.figure;
   }
 
+  findGaps() {
+    let gaps: number[][] = [];
+    const hasIndexInGaps = (index: number) => gaps.some((gap) => gap.includes(index));
+    for (let index = 0; index < this._reserved.length; index++) {
+      if (!this._reserved[index]) {
+        if (!hasIndexInGaps(index)) {
+          gaps.push(this.getGapIndexesAt(
+            index % this.width,
+            Math.floor(index / this.width),
+          ));
+        }
+      }
+    }
+    return gaps;
+  }
+
   getGapIndexesAt(x: number, y: number, found: number[] = []): number[] {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
       return found;
