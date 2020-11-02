@@ -74,4 +74,21 @@ export class Board {
     this._updateReservation();
     return placedFigure.figure;
   }
+
+  getGapIndexesAt(x: number, y: number, found: number[] = []): number[] {
+    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+      return found;
+    }
+    const index = y * this.width + x;
+    if (!this._reserved[index]) {
+      if (!found.includes(index)) {
+        found.push(index);
+        found = this.getGapIndexesAt(x - 1, y, found);
+        found = this.getGapIndexesAt(x + 1, y, found);
+        found = this.getGapIndexesAt(x, y - 1, found);
+        found = this.getGapIndexesAt(x, y + 1, found);
+      }
+    }
+    return found;
+  }
 }
