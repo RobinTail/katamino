@@ -83,28 +83,24 @@ export class Board {
     for (let index = 0; index < this._reserved.length; index++) {
       if (!this._reserved[index]) {
         if (!hasIndexInGaps(index)) {
-          gaps.push(this.getGapIndexesAt(
-            index % this.width,
-            Math.floor(index / this.width),
-          ));
+          gaps.push(this.getGapIndexesFrom(index));
         }
       }
     }
     return gaps;
   }
 
-  getGapIndexesAt(x: number, y: number, found: number[] = []): number[] {
-    if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+  getGapIndexesFrom(index: number, found: number[] = []): number[] {
+    if (index < 0 || index >= this._reserved.length) {
       return found;
     }
-    const index = y * this.width + x;
     if (!this._reserved[index]) {
       if (!found.includes(index)) {
         found.push(index);
-        found = this.getGapIndexesAt(x - 1, y, found);
-        found = this.getGapIndexesAt(x + 1, y, found);
-        found = this.getGapIndexesAt(x, y - 1, found);
-        found = this.getGapIndexesAt(x, y + 1, found);
+        found = this.getGapIndexesFrom(index - 1, found);
+        found = this.getGapIndexesFrom(index + 1, found);
+        found = this.getGapIndexesFrom(index - this.width, found);
+        found = this.getGapIndexesFrom(index + this.width, found);
       }
     }
     return found;

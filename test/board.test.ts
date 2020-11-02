@@ -64,7 +64,7 @@ describe('Board', () => {
 
   it('can measure gap on empty board', () => {
     const board = new Board(5);
-    expect(board.getGapIndexesAt(0, 0).length).to.be.eq(25);
+    expect(board.getGapIndexesFrom(0).length).to.be.eq(25);
   });
 
   it('can measure gap between figures', () => {
@@ -78,7 +78,7 @@ describe('Board', () => {
     if (board.canPlaceFigure(2, 0, figureY)) {
       board.placeFigure(2, 0, figureY);
     }
-    const gapIndexes = board.getGapIndexesAt(1, 0);
+    const gapIndexes = board.getGapIndexesFrom(1);
     expect(gapIndexes.length).to.be.eq(2, board.getPrintable());
     expect(gapIndexes).includes(1);
     expect(gapIndexes).includes(2);
@@ -99,7 +99,7 @@ describe('Board', () => {
     expect(gaps.length).to.be.eq(2);
     expect(gaps).to.be.deep.eq([
       [1, 2],
-      [4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 16, 17, 12, 10]
+      [4, 9, 10, 15, 14, 19, 20, 21, 22, 23, 24, 17, 16, 12]
     ]);
   });
 });
