@@ -41,7 +41,7 @@ export class Figure {
     return this.shape.pattern.map((cell) => cell ? humanReadableTrue : humanReadableFalse);
   }
 
-  rotate(isClockwise: boolean) {
+  rotate(isClockwise: boolean = false) {
     if (this.isLocked) {
       return;
     }
@@ -87,65 +87,67 @@ export class Figure {
   }
 }
 
-export const figures: Record<FigureName, Figure> = {
-  F: new Figure('F', 3, true, [
-    '.', 'X', 'X',
-    'X', 'X', '.',
-    '.', 'X', '.'
-  ]),
-  I: new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']),
-  L: new Figure('L', 2, true, [
-    'X', 'X',
-    'X', '.',
-    'X', '.',
-    'X', '.'
-  ]),
-  N: new Figure('N', 2, true, [
-    '.', 'X',
-    'X', 'X',
-    'X', '.',
-    'X', '.'
-  ]),
-  P: new Figure('P', 2, true, [
-    'X', 'X',
-    'X', 'X',
-    'X', '.'
-  ]),
-  T: new Figure('T', 3, false, [
-    'X', 'X', 'X',
-    '.', 'X', '.',
-    '.', 'X', '.'
-  ]),
-  U: new Figure('U', 3, false, [
-    'X', '.', 'X',
-    'X', 'X', 'X'
-  ]),
-  V: new Figure('V', 3, false, [
-    'X', '.', '.',
-    'X', '.', '.',
-    'X', 'X', 'X'
-  ]),
-  W: new Figure('W', 3, false, [
-    'X', '.', '.',
-    'X', 'X', '.',
-    '.', 'X', 'X'
-  ]),
-  X: new Figure('X', 3, false, [
-    '.', 'X', '.',
-    'X', 'X', 'X',
-    '.', 'X', '.'
-  ]),
-  Y: new Figure('Y', 2, true, [
-    '.', 'X',
-    'X', 'X',
-    '.', 'X',
-    '.', 'X'
-  ]),
-  Z: new Figure('Z', 3, true, [
-    'X', 'X', '.',
-    '.', 'X', '.',
-    '.', 'X', 'X'
-  ])
-};
+export function createFigures(): Record<FigureName, Figure>{
+  return {
+    F: new Figure('F', 3, true, [
+      '.', 'X', 'X',
+      'X', 'X', '.',
+      '.', 'X', '.'
+    ]),
+    I: new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']),
+    L: new Figure('L', 2, true, [
+      'X', 'X',
+      'X', '.',
+      'X', '.',
+      'X', '.'
+    ]),
+    N: new Figure('N', 2, true, [
+      '.', 'X',
+      'X', 'X',
+      'X', '.',
+      'X', '.'
+    ]),
+    P: new Figure('P', 2, true, [
+      'X', 'X',
+      'X', 'X',
+      'X', '.'
+    ]),
+    T: new Figure('T', 3, false, [
+      'X', 'X', 'X',
+      '.', 'X', '.',
+      '.', 'X', '.'
+    ]),
+    U: new Figure('U', 3, false, [
+      'X', '.', 'X',
+      'X', 'X', 'X'
+    ]),
+    V: new Figure('V', 3, false, [
+      'X', '.', '.',
+      'X', '.', '.',
+      'X', 'X', 'X'
+    ]),
+    W: new Figure('W', 3, false, [
+      'X', '.', '.',
+      'X', 'X', '.',
+      '.', 'X', 'X'
+    ]),
+    X: new Figure('X', 3, false, [
+      '.', 'X', '.',
+      'X', 'X', 'X',
+      '.', 'X', '.'
+    ]),
+    Y: new Figure('Y', 2, true, [
+      '.', 'X',
+      'X', 'X',
+      '.', 'X',
+      '.', 'X'
+    ]),
+    Z: new Figure('Z', 3, true, [
+      'X', 'X', '.',
+      '.', 'X', '.',
+      '.', 'X', 'X'
+    ])
+  };
+}
 
 

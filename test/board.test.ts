@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {Board} from '../lib/board';
-import {Figure} from '../lib/figure';
+import {createFigures} from '../lib/figure';
 
 describe('Board', () => {
   it('should be initialized properly', () => {
@@ -13,7 +13,7 @@ describe('Board', () => {
 
   it('can check possibility of placing a figure', () => {
     const board = new Board(7);
-    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = createFigures().I;
     expect(
       board.canPlaceFigure(0, 0, figureI)
     ).to.be.true;
@@ -21,7 +21,7 @@ describe('Board', () => {
 
   it('can check boundaries', () => {
     const board = new Board(7);
-    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = createFigures().I;
     expect(board.canPlaceFigure(-1, 0, figureI)).to.be.false;
     expect(board.canPlaceFigure(4, 0, figureI)).to.be.false;
     expect(board.canPlaceFigure(0, 5, figureI)).to.be.false;
@@ -30,17 +30,9 @@ describe('Board', () => {
 
   it('can check other figures on board', () => {
     const board = new Board(5);
-    const figureY = new Figure('Y', 2, true, [
-      '.', 'X',
-      'X', 'X',
-      '.', 'X',
-      '.', 'X'
-    ]);
-    const figureW = new Figure('W', 3, false, [
-      'X', '.', '.',
-      'X', 'X', '.',
-      '.', 'X', 'X'
-    ]);
+    const figures = createFigures();
+    const figureY = figures.Y;
+    const figureW = figures.W;
     board.placeFigure(0, 0, figureW);
     expect(board.canPlaceFigure(0, 0, figureY)).to.be.false;
     expect(board.canPlaceFigure(1, 0, figureY)).to.be.false;
@@ -49,7 +41,7 @@ describe('Board', () => {
 
   it('can place figure', () => {
     const board = new Board(5);
-    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = createFigures().I;
     board.placeFigure(0, 0, figureI);
     expect(board._reserved).to.be.deep.eq(
       Array(5).fill(true)
@@ -61,7 +53,7 @@ describe('Board', () => {
 
   it('can remove last figure', () => {
     const board = new Board(5);
-    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = createFigures().I;
     board.placeFigure(0, 0, figureI);
     const removedFigure = board.removeLastFigure();
     expect(removedFigure).to.be.deep.eq(figureI);
@@ -77,17 +69,9 @@ describe('Board', () => {
 
   it('can measure gap between figures', () => {
     const board = new Board(5);
-    const figureY = new Figure('Y', 2, true, [
-      '.', 'X',
-      'X', 'X',
-      '.', 'X',
-      '.', 'X'
-    ]);
-    const figureW = new Figure('W', 3, false, [
-      'X', '.', '.',
-      'X', 'X', '.',
-      '.', 'X', 'X'
-    ]);
+    const figures = createFigures();
+    const figureY = figures.Y;
+    const figureW = figures.W;
     if (board.canPlaceFigure(0, 0, figureW)) {
       board.placeFigure(0, 0, figureW);
     }
