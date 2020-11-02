@@ -19,7 +19,7 @@ describe('Figures', () => {
   });
 
   it('returns correct human readable pattern', () => {
-    const figureF = new Figure('F', 3, [
+    const figureF = new Figure('F', 3, true, [
       '.', 'X', 'X',
       'X', 'X', '.',
       '.', 'X', '.'
@@ -32,7 +32,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate left square figure', () => {
-    const figureF = new Figure('F', 3, [
+    const figureF = new Figure('F', 3, true, [
       '.', 'X', 'X',
       'X', 'X', '.',
       '.', 'X', '.'
@@ -47,7 +47,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate left non-square figure', () => {
-    const figureL = new Figure('L', 2, [
+    const figureL = new Figure('L', 2, true, [
       'X', 'X',
       'X', '.',
       'X', '.',
@@ -62,7 +62,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate left linear figure', () => {
-    const figureI = new Figure('I', 5, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
     figureI.rotate(false);
     expect(figureI.shape.width).to.be.equal(1);
     expect(figureI.getHumanReadablePattern()).to.be.deep.equal([
@@ -75,7 +75,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate right square figure', () => {
-    const figureF = new Figure('F', 3, [
+    const figureF = new Figure('F', 3, true, [
       '.', 'X', 'X',
       'X', 'X', '.',
       '.', 'X', '.'
@@ -90,7 +90,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate right non-square figure', () => {
-    const figureL = new Figure('L', 2, [
+    const figureL = new Figure('L', 2, true, [
       'X', 'X',
       'X', '.',
       'X', '.',
@@ -105,7 +105,7 @@ describe('Figures', () => {
   });
 
   it('can be rotate right linear figure', () => {
-    const figureI = new Figure('I', 5, ['X', 'X', 'X', 'X', 'X']);
+    const figureI = new Figure('I', 5, false, ['X', 'X', 'X', 'X', 'X']);
     figureI.rotate(true);
     expect(figureI.shape.width).to.be.equal(1);
     expect(figureI.getHumanReadablePattern()).to.be.deep.equal([
@@ -115,6 +115,38 @@ describe('Figures', () => {
       'X',
       'X'
     ], JSON.stringify(figureI.shape));
+  });
+
+  it('can flip figures 2 cells wide', () => {
+    const figureL = new Figure('L', 2, true, [
+      'X', 'X',
+      'X', '.',
+      'X', '.',
+      'X', '.'
+    ]);
+    figureL.flip();
+    expect(figureL.shape.width).to.be.equal(2);
+    expect(figureL.getHumanReadablePattern()).to.be.deep.equal([
+      'X', 'X',
+      '.', 'X',
+      '.', 'X',
+      '.', 'X'
+    ], figureL.getPrintablePattern());
+  });
+
+  it('can flip figures 3 cells wide', () => {
+    const figureF = new Figure('F', 3, true, [
+      '.', 'X', 'X',
+      'X', 'X', '.',
+      '.', 'X', '.'
+    ]);
+    figureF.flip();
+    expect(figureF.shape.width).to.be.equal(3);
+    expect(figureF.getHumanReadablePattern()).to.be.deep.equal([
+      'X', 'X', '.',
+      '.', 'X', 'X',
+      '.', 'X', '.'
+    ], figureF.getPrintablePattern());
   });
 });
 
