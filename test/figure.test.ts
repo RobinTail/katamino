@@ -144,6 +144,7 @@ describe('Figures', () => {
     let result: string[] = [];
     figureI.applyAllPossibleRotationsAndFlips((figure) => {
       result.push(Figure.prototype.getPrintablePattern.apply(figure));
+      return false;
     });
     expect(result.length).to.be.eq(2);
     expect(result.shift()).to.be.eq('\nXXXXX');
@@ -157,6 +158,7 @@ describe('Figures', () => {
     let result: string[] = [];
     figureX.applyAllPossibleRotationsAndFlips((figure) => {
       result.push(Figure.prototype.getPrintablePattern.apply(figure));
+      return false;
     });
     expect(result.length).to.be.eq(1);
     expect(result.shift()).to.be.eq('\n.X.\nXXX\n.X.');
@@ -169,6 +171,7 @@ describe('Figures', () => {
     let result: string[] = [];
     figureZ.applyAllPossibleRotationsAndFlips((figure) => {
       result.push(Figure.prototype.getPrintablePattern.apply(figure));
+      return false;
     });
     expect(result.length).to.be.eq(4);
     expect(result.shift()).to.be.eq('\nXX.\n.X.\n.XX');
@@ -184,6 +187,7 @@ describe('Figures', () => {
     let result: string[] = [];
     figureL.applyAllPossibleRotationsAndFlips((figure) => {
       result.push(Figure.prototype.getPrintablePattern.apply(figure));
+      return false;
     });
     expect(result.length).to.be.eq(8);
     expect(result).to.be.deep.eq([
