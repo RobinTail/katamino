@@ -95,27 +95,28 @@ export class Figure {
   /**
    * Iterates over all possible rotations and flips of the figure calling cb function with the figure as an argument
    * @param cb should return true if iteration was successful and the cycle should be stopped on that
+   * @return boolean if some iteration was successful
    */
-  applyAllPossibleRotationsAndFlips(cb: (figure: Figure) => boolean) {
+  applyAllPossibleRotationsAndFlips(cb: (figure: Figure) => boolean): boolean {
     if (this.isLocked) {
       return;
     }
     if (cb(this)) { // 0
-      return;
+      return true;
     }
     if (this.options.isRotatable90) {
       this.rotate();
       if (cb(this)) { // -90
-        return;
+        return true;
       }
       if (this.options.isRotatable180) {
         this.rotate();
         if (cb(this)) { // -180
-          return;
+          return true;
         }
         this.rotate();
         if (cb(this)) { // -270
-          return;
+          return true;
         }
         this.rotate(); // back to 0
       } else {
@@ -125,21 +126,21 @@ export class Figure {
     if (this.options.isFlippable) {
       this.flip();
       if (cb(this)) { // 0
-        return;
+        return true;
       }
       if (this.options.isRotatable90) {
         this.rotate();
         if (cb(this)) { // -90
-          return;
+          return true;
         }
         if (this.options.isRotatable180) {
           this.rotate();
           if (cb(this)) { // -180
-            return;
+            return true;
           }
           this.rotate();
           if (cb(this)) { // -270
-            return;
+            return true;
           }
           this.rotate(); // back to 0
         } else {
@@ -148,6 +149,7 @@ export class Figure {
       }
       this.flip(); // back initial flip
     }
+    return false;
   }
 }
 
