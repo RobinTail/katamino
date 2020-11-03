@@ -28,7 +28,8 @@ export class Board {
       for (let y = 0; y < placed.figure.shape.getHeight(); y++) {
         for (let x = 0; x < placed.figure.shape.width; x++) {
           this._reserved[(placed.y + y) * this.width + placed.x + x] =
-            placed.figure.shape.pattern[y * placed.figure.shape.width + x];
+            this._reserved[(placed.y + y) * this.width + placed.x + x] || // current reservation
+            placed.figure.shape.pattern[y * placed.figure.shape.width + x]; // cell of this figure
         }
       }
     }

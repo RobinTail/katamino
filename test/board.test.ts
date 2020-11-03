@@ -51,6 +51,27 @@ describe('Board', () => {
     expect(figureI.isLocked).to.be.true;
   });
 
+  it('can place two figures', () => {
+    const board = new Board(3);
+    const figureL = createFigures().L;
+    const figureT = createFigures().T;
+    figureT.rotate();
+    figureT.rotate(); // 180
+    board.placeFigure(0, 0, figureL);
+    console.log(board.getPrintable());
+    if (board.canPlaceFigure(0, 2, figureT)) {
+      board.placeFigure(0, 2, figureT);
+    }
+    console.log(board.getPrintable());
+    expect(board._reserved).to.be.deep.eq([
+      true, true, false,
+      true, false, false,
+      true, true, false,
+      true, true, false,
+      true, true, true,
+    ], board.getPrintable());
+  });
+
   it('can remove last figure', () => {
     const board = new Board(5);
     const figureI = createFigures().I;
