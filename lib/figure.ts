@@ -4,7 +4,7 @@ type HumanReadableFalse = typeof humanReadableFalse;
 type HumanReadableTrue = typeof humanReadableTrue;
 type HumanReadablePattern = (HumanReadableFalse | HumanReadableTrue)[];
 
-type FigureName = 'F' | 'I' | 'L' | 'N' | 'P' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
+export type FigureName = 'F' | 'I' | 'L' | 'N' | 'P' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
 
 export interface Shape {
   width: number;

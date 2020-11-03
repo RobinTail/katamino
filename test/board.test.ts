@@ -58,11 +58,9 @@ describe('Board', () => {
     figureT.rotate();
     figureT.rotate(); // 180
     board.placeFigure(0, 0, figureL);
-    console.log(board.getPrintable());
     if (board.canPlaceFigure(0, 2, figureT)) {
       board.placeFigure(0, 2, figureT);
     }
-    console.log(board.getPrintable());
     expect(board._reserved).to.be.deep.eq([
       true, true, false,
       true, false, false,
@@ -120,7 +118,7 @@ describe('Board', () => {
     expect(gaps.length).to.be.eq(2);
     expect(gaps).to.be.deep.eq([
       [1, 2],
-      [4, 9, 10, 15, 14, 19, 20, 21, 22, 23, 24, 17, 16, 12]
-    ]);
+      [4, 9, 10, 15, 14, 19, 20, 21, 22, 23, 24, 17, 16]
+    ], board.getPrintable());
   });
 });
