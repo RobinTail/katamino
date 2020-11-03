@@ -23,6 +23,6 @@ export function loadLevel(boardSize: number, setName: SetName): Level {
   const figures = createFigures();
   return {
     board,
-    figures: levels[setName].slice(0, boardSize + 1).map((figureName) => figures[figureName])
+    figures: levels[setName].slice(0, boardSize).map((figureName) => figures[figureName])
   };
 }
