@@ -21,7 +21,7 @@ function findPlace(): boolean {
           // console.log(board.placedFigures.map((placed) => `Figure ${placed.figure.name} on ${placed.x}:${placed.y}`));
           // console.log(board.getPrintable());
           const gaps = board.findGaps();
-          if (gaps.some((gap) => gap.length < 5)) {
+          if (gaps.some((gap) => gap.length % 5 !== 0)) {
             // console.log('Gap is useless, removing');
             board.removeLastFigure();
             // console.log(board.getPrintable());
