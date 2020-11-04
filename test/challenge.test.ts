@@ -2,10 +2,11 @@ import { expect } from "chai";
 import {challenges} from '../lib/challenge';
 
 describe('Challenge', () => {
-  it('should have two challenges', () => {
-    expect(Object.keys(challenges).length).to.be.eq(2);
+  it('should have 3 challenges', () => {
+    expect(Object.keys(challenges).length).to.be.eq(3);
     expect(challenges).haveOwnProperty('SmallSlam');
     expect(challenges).haveOwnProperty('TheSlam');
+    expect(challenges).haveOwnProperty('Ultimate');
   });
 
   it('Small Slam should have A-G sets', () => {
@@ -45,10 +46,10 @@ describe('Challenge', () => {
   });
 
   it('each challenge should not have duplicates in a set', () => {
-    Object.values(challenges).forEach(({sets, maxSize}) => {
+    Object.values(challenges).forEach(({name, sets, maxSize}) => {
       Object.values(sets).forEach((figureNames) => {
         const set = new Set(figureNames);
-        expect(set.size).to.be.eq(maxSize);
+        expect(set.size).to.be.eq(maxSize, `${name} ${figureNames.join(', ')}`);
       });
     });
   });

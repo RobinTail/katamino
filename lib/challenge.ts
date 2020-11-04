@@ -7,10 +7,14 @@ interface Level {
   figures: Figure[];
 }
 
-export type ChallengeName = 'SmallSlam' | 'TheSlam';
+export type ChallengeName = 'SmallSlam' | 'TheSlam' | 'Ultimate';
 
-export type SetName<S extends ChallengeName> = (S extends 'SmallSlam' ? ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G') : never) |
-  (S extends 'TheSlam' ? ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N') : never);
+export type SetName<S extends ChallengeName> =
+  (S extends 'SmallSlam' ? ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G') : never)
+  |
+  (S extends 'TheSlam' ? ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N') : never)
+  |
+  (S extends 'Ultimate' ? ('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' /*| 'I' */ | 'J' | 'K' | 'L') : never);
 
 interface Challenge<N extends ChallengeName> {
   name: N;
@@ -56,9 +60,31 @@ const theSlam: Challenge<'TheSlam'> = {
   }
 }
 
+const ultimate: Challenge<'Ultimate'> = {
+  name: 'Ultimate',
+  minSize: 4,
+  maxSize: 11,
+  sets: {
+    A: ['L', 'N', 'V', 'Z', 'U', 'T', 'P', 'X', 'F', 'I', 'W'],
+    B: ['L', 'Y', 'U', 'F', 'Z', 'V', 'X', 'P', 'I', 'N', 'T'],
+    C: ['L', 'Y', 'V', 'P', 'F', 'W', 'N', 'U', 'Z', 'T', 'I'],
+    D: ['Y', 'P', 'U', 'F', 'T', 'X', 'L', 'V', 'W', 'Z', 'N'],
+    E: ['L', 'Y', 'P', 'Z', 'W', 'N', 'T', 'F', 'I', 'U', 'X'],
+    F: ['L', 'P', 'U', 'F', 'X', 'Y', 'I', 'N', 'T', 'W', 'V'],
+    G: ['L', 'Y', 'P', 'W', 'N', 'U', 'V', 'Z', 'X', 'I', 'F'],
+    H: ['Y', 'N', 'V', 'T', 'F', 'I', 'Z', 'W', 'L', 'X', 'U'],
+    // found an issue here: duplicated figure N in the original game rules
+    // I: ['L', 'V', 'P', 'Z', 'N', 'F', 'W', 'I', 'N', 'T', 'X'],
+    J: ['L', 'Y', 'P', 'T', 'W', 'N', 'I', 'V', 'U', 'X', 'Z'],
+    K: ['Y', 'N', 'P', 'U', 'V', 'Z', 'X', 'I', 'W', 'F', 'T'],
+    L: ['L', 'Y', 'V', 'U', 'Z', 'I', 'F', 'T', 'X', 'P', 'W']
+  }
+}
+
 export const challenges: Record<ChallengeName, Challenge<ChallengeName>> = {
   SmallSlam: smallSlam,
-  TheSlam: theSlam
+  TheSlam: theSlam,
+  Ultimate: ultimate
 }
 
 export function loadLevel<C extends ChallengeName>(challengeName: C, boardSize: number, setName: SetName<C>): Level {
