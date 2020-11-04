@@ -1,4 +1,5 @@
-import {Figure} from './figure';
+import {Figure, FigureName} from './figure';
+import * as chalk from 'chalk';
 
 const staticHeight = 5;
 
@@ -13,34 +14,53 @@ export class Board {
   height: number;
   placedFigures: PlacedFigure[];
   _reserved: boolean[];
+  _reservedBy: (FigureName | undefined)[];
 
   constructor(width: number) {
     this.width = width;
     this.height = staticHeight;
     this._reserved = Array(this.height * this.width);
+    this._reservedBy = Array(this.height * this.width);
     this.placedFigures = [];
     this._updateReservation();
   }
 
   _updateReservation() {
     this._reserved.fill(false);
+    this._reservedBy.fill(undefined);
     for (let placed of this.placedFigures) {
       for (let y = 0; y < placed.figure.shape.getHeight(); y++) {
         for (let x = 0; x < placed.figure.shape.width; x++) {
-          this._reserved[(placed.y + y) * this.width + placed.x + x] =
-            this._reserved[(placed.y + y) * this.width + placed.x + x] || // current reservation
-            placed.figure.shape.pattern[y * placed.figure.shape.width + x]; // cell of this figure
+          if (placed.figure.shape.pattern[y * placed.figure.shape.width + x]) {
+            const index = (placed.y + y) * this.width + placed.x + x;
+            this._reserved[index] = true;
+            this._reservedBy[index] = placed.figure.name;
+          }
         }
       }
     }
   }
 
   getPrintable() {
+    const colors: Record<FigureName, (text: string) => string> = {
+      F: chalk.red,
+      I: chalk.redBright,
+      L: chalk.magenta,
+      N: chalk.magentaBright,
+      U: chalk.green,
+      P: chalk.greenBright,
+      T: chalk.blue,
+      V: chalk.blueBright,
+      W: chalk.yellow,
+      X: chalk.white,
+      Y: chalk.cyan,
+      Z: chalk.cyanBright
+    };
     let result = '\n' + '#'.repeat(this.width + 2);
     for (let y = 0; y < this.height; y++) {
-      result += '\n#' + this._reserved
+      result += '\n#' + this._reservedBy
         .slice(y * this.width, (y + 1) * this.width)
-        .map((cell) => cell ? 'F' : ' ')
+        .map((figureName) => figureName ? colors[figureName](figureName) : ' ')
         .join('') + '#';
     }
     return result + '\n' + '#'.repeat(this.width + 2);

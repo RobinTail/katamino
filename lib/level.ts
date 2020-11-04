@@ -2,6 +2,7 @@ import {Board} from './board';
 import {createFigures, Figure, FigureName} from './figure';
 
 interface Level {
+  name: string;
   board: Board;
   figures: Figure[];
 }
@@ -22,6 +23,7 @@ export function loadLevel(boardSize: number, setName: SetName): Level {
   const board = new Board(boardSize);
   const figures = createFigures();
   return {
+    name: `${boardSize}-${setName}`,
     board,
     figures: levels[setName].slice(0, boardSize).map((figureName) => figures[figureName])
   };
