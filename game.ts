@@ -1,12 +1,8 @@
-import {loadLevel} from './lib/level';
+import {Board} from './lib/board';
+import {Figure} from './lib/figure';
+import {ChallengeName, challenges, loadLevel, SetName} from './lib/challenge';
 
-const {name, board, figures} = loadLevel(8, 'A');
-
-console.log(`Board ${board.width}x${board.height}, Level ${name}`);
-console.log(`Available figures: ${figures.map((figure) => figure.name).join(', ')}`);
-console.log(board.getPrintable());
-
-function findPlace(): boolean {
+function findPlace(board: Board, figures: Figure[]): boolean {
   const figure = figures.shift();
   if (!figure) {
     return true; // no more figures
@@ -27,7 +23,7 @@ function findPlace(): boolean {
             // console.log(board.getPrintable());
             continue;
           }
-          const isNextSuccessful = findPlace();
+          const isNextSuccessful = findPlace(board, figures);
           if (!isNextSuccessful) {
             // console.log('Branch was not successful, rolling back')
             board.removeLastFigure();
@@ -47,5 +43,16 @@ function findPlace(): boolean {
   return isPlaced;
 }
 
-findPlace();
-console.log(board.getPrintable());
+
+Object.values(challenges).forEach(({name: challengeName, minSize, maxSize, sets}) => {
+  for (let size = minSize; size <= maxSize; size++) {
+    Object.keys(sets).forEach((setName) => {
+      const {name: levelName, board, figures} = loadLevel(challengeName, size, setName as SetName<ChallengeName>);
+      console.log(`Board ${board.width}x${board.height}, Level ${levelName}`);
+      console.log(`Available figures: ${figures.map((figure) => figure.name).join(', ')}`);
+      //console.log(board.getPrintable());
+      findPlace(board, figures);
+      console.log(board.getPrintable());
+    })
+  }
+});
