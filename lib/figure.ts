@@ -60,10 +60,13 @@ export class Figure {
     this.isLocked = false;
   }
 
-  walk(initialX: number, initialY: number, cb: (x: number, y: number) => any) {
+  walk(initialX: number, initialY: number, cb: (x: number, y: number) => boolean) {
     let x = initialX;
     let y = initialY;
-    cb(x, y);
+    let success = cb(x, y);
+    if (!success) {
+      return false;
+    }
     for (let cell of this.vector) {
       switch (cell) {
         case 'R':
@@ -79,8 +82,12 @@ export class Figure {
           y--;
           break;
       }
-      cb(x, y);
+      success = cb(x, y);
+      if (!success) {
+        return false;
+      }
     }
+    return true;
   }
 
   getShape(): Shape {
@@ -90,6 +97,7 @@ export class Figure {
         matrix[y] = {};
       }
       matrix[y][x] = true;
+      return true;
     })
     const height = Object.keys(matrix).length;
     const minY = Math.min(...Object.keys(matrix).map((y) => Number(y)));

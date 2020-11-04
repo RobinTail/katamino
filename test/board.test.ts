@@ -34,15 +34,17 @@ describe('Board', () => {
     const figureY = figures.Y;
     const figureW = figures.W;
     board.placeFigure(0, 0, figureW);
-    expect(board.canPlaceFigure(0, 0, figureY)).to.be.false;
-    expect(board.canPlaceFigure(1, 0, figureY)).to.be.false;
-    expect(board.canPlaceFigure(2, 0, figureY)).to.be.true;
+    expect(board.canPlaceFigure(0, 1, figureY)).to.be.false;
+    expect(board.canPlaceFigure(1, 1, figureY)).to.be.false;
+    expect(board.canPlaceFigure(2, 1, figureY)).to.be.true;
   });
 
   it('can place figure', () => {
     const board = new Board(5);
     const figureI = createFigures().I;
-    board.placeFigure(0, 0, figureI);
+    if (board.canPlaceFigure(0, 0, figureI)) {
+      board.placeFigure(0, 0, figureI);
+    }
     expect(board._reserved).to.be.deep.eq(
       Array(5).fill(true)
         .concat(Array(20).fill(false)),
@@ -57,9 +59,11 @@ describe('Board', () => {
     const figureT = createFigures().T;
     figureT.rotate();
     figureT.rotate(); // 180
-    board.placeFigure(0, 0, figureL);
-    if (board.canPlaceFigure(0, 2, figureT)) {
-      board.placeFigure(0, 2, figureT);
+    if (board.canPlaceFigure(0, 3, figureL)) {
+      board.placeFigure(0, 3, figureL);
+    }
+    if (board.canPlaceFigure(2, 4, figureT)) {
+      board.placeFigure(2, 4, figureT);
     }
     expect(board._reserved).to.be.deep.eq([
       true, true, false,
@@ -94,8 +98,8 @@ describe('Board', () => {
     if (board.canPlaceFigure(0, 0, figureW)) {
       board.placeFigure(0, 0, figureW);
     }
-    if (board.canPlaceFigure(2, 0, figureY)) {
-      board.placeFigure(2, 0, figureY);
+    if (board.canPlaceFigure(2, 1, figureY)) {
+      board.placeFigure(2, 1, figureY);
     }
     const gapIndexes = board.getGapIndexesFrom(1);
     expect(gapIndexes.length).to.be.eq(2, board.getPrintable());
@@ -111,8 +115,8 @@ describe('Board', () => {
     if (board.canPlaceFigure(0, 0, figureW)) {
       board.placeFigure(0, 0, figureW);
     }
-    if (board.canPlaceFigure(2, 0, figureY)) {
-      board.placeFigure(2, 0, figureY);
+    if (board.canPlaceFigure(2, 1, figureY)) {
+      board.placeFigure(2, 1, figureY);
     }
     const gaps = board.findGaps();
     expect(gaps.length).to.be.eq(2);
