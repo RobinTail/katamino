@@ -60,7 +60,15 @@ export class Figure {
     this.isLocked = false;
   }
 
-  walk(initialX: number, initialY: number, cb: (x: number, y: number) => boolean) {
+  /**
+   * Walks through figure vector path with callback
+   * Returns true if all callbacks returned true
+   * @param initialX
+   * @param initialY
+   * @param cb should return true if iteration was successful, false — stops walking
+   * @return boolean
+   */
+  walk(initialX: number, initialY: number, cb: (x: number, y: number) => boolean): boolean {
     let x = initialX;
     let y = initialY;
     let success = cb(x, y);
