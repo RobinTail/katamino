@@ -29,9 +29,9 @@ export class Board {
     this._reserved.fill(false);
     this._reservedBy.fill(undefined);
     for (let placed of this.placedFigures) {
-      for (let y = 0; y < placed.figure.shape.getHeight(); y++) {
-        for (let x = 0; x < placed.figure.shape.width; x++) {
-          if (placed.figure.shape.pattern[y * placed.figure.shape.width + x]) {
+      for (let y = 0; y < placed.figure.getShape().height; y++) {
+        for (let x = 0; x < placed.figure.getShape().width; x++) {
+          if (placed.figure.getShape().pattern[y * placed.figure.getShape().width + x]) {
             const index = (placed.y + y) * this.width + placed.x + x;
             this._reserved[index] = true;
             this._reservedBy[index] = placed.figure.name;
@@ -70,12 +70,12 @@ export class Board {
     if (x < 0 || y < 0) {
       return false;
     }
-    if (x + figure.shape.width > this.width || y + figure.shape.getHeight() > this.height) {
+    if (x + figure.getShape().width > this.width || y + figure.getShape().height > this.height) {
       return false;
     }
-    for (let fY = 0; fY < figure.shape.getHeight(); fY++) {
-      for (let fX = 0; fX < figure.shape.width; fX++) {
-        if (figure.shape.pattern[fY * figure.shape.width + fX]) {
+    for (let fY = 0; fY < figure.getShape().height; fY++) {
+      for (let fX = 0; fX < figure.getShape().width; fX++) {
+        if (figure.getShape().pattern[fY * figure.getShape().width + fX]) {
           if (this._reserved[(y + fY) * this.width + x + fX]) {
             return false;
           }

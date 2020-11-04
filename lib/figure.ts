@@ -4,12 +4,33 @@ type HumanReadableFalse = typeof humanReadableFalse;
 type HumanReadableTrue = typeof humanReadableTrue;
 type HumanReadablePattern = (HumanReadableFalse | HumanReadableTrue)[];
 
+interface Shape {
+  width: number;
+  height: number;
+  pattern: boolean[];
+}
+
 export type FigureName = 'F' | 'I' | 'L' | 'N' | 'P' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
 
-export interface Shape {
-  width: number;
-  getHeight: () => number;
-  pattern: boolean[];
+type Direction = 'R' | 'L' | 'U' | 'D'; // right, left, up, down
+type Vector = Direction[];
+const rotationsRight: Record<Direction, Direction> = {
+  R: 'D',
+  L: 'U',
+  U: 'R',
+  D: 'L'
+};
+const rotationsLeft: Record<Direction, Direction> = {
+  R: 'U',
+  L: 'D',
+  U: 'L',
+  D: 'R'
+};
+const flip: Record<Direction, Direction> = {
+  L: 'R',
+  R: 'L',
+  U: 'U',
+  D: 'D'
 }
 
 interface FigureOptions {
@@ -22,17 +43,13 @@ export class Figure {
   name: FigureName;
   options: FigureOptions;
   isLocked: boolean;
-  shape: Shape;
+  vector: Vector;
 
-  constructor(name: FigureName, width: number, options: FigureOptions, pattern: HumanReadablePattern) {
+  constructor(name: FigureName, options: FigureOptions, vector: Vector) {
     this.name = name;
     this.options = options;
     this.isLocked = false;
-    this.shape = {
-      width,
-      getHeight: () => pattern.length / this.shape.width,
-      pattern: pattern.map((item) => item === humanReadableTrue)
-    };
+    this.vector = vector;
   }
 
   lock() {
@@ -43,49 +60,79 @@ export class Figure {
     this.isLocked = false;
   }
 
+  walk(initialX: number, initialY: number, cb: (x: number, y: number) => any) {
+    let x = initialX;
+    let y = initialY;
+    cb(x, y);
+    for (let cell of this.vector) {
+      switch (cell) {
+        case 'R':
+          x++;
+          break;
+        case 'L':
+          x--;
+          break;
+        case 'D':
+          y++;
+          break;
+        case 'U':
+          y--;
+          break;
+      }
+      cb(x, y);
+    }
+  }
+
+  getShape(): Shape {
+    let matrix: {[K: number]: {[K: number]: true}} = {};
+    this.walk(10, 10, (x, y) => {
+      if (!matrix[y]) {
+        matrix[y] = {};
+      }
+      matrix[y][x] = true;
+    })
+    const height = Object.keys(matrix).length;
+    const minY = Math.min(...Object.keys(matrix).map((y) => Number(y)));
+    const minX = Math.min(...Object.values(matrix).map((row) =>
+      Math.min(...Object.keys(row).map((x) => Number(x)))));
+    const maxX = Math.max(...Object.values(matrix).map((row) =>
+      Math.max(...Object.keys(row).map((x) => Number(x)))));
+    const width = maxX - minX + 1;
+    let pattern: boolean[] = Array(height * width).fill(false);
+    Object.keys(matrix).forEach((y) => {
+      Object.keys(matrix[y]).forEach((x) => {
+        const index = (Number(y) - minY) * width + Number(x) - minX;
+        pattern[index] = true;
+      });
+    });
+    return {width, height, pattern}
+  }
+
   getHumanReadablePattern(): HumanReadablePattern {
-    return this.shape.pattern.map((cell) => cell ? humanReadableTrue : humanReadableFalse);
+    return this.getShape().pattern.map((cell) => cell ? humanReadableTrue : humanReadableFalse);
   }
 
   rotate(isClockwise: boolean = false) {
     if (this.isLocked) {
       return;
     }
-    const newWidth = this.shape.getHeight();
-    let newPattern: Shape['pattern'] = [];
-    for (let y = 0; y < this.shape.getHeight(); y++) {
-      for (let x = 0; x < this.shape.width; x++) {
-        const srcIndex = y * this.shape.width + x;
-        const newIndex = isClockwise ? newWidth * x + newWidth - y - 1 : (this.shape.width - x - 1) * newWidth + y;
-        newPattern[newIndex] = this.shape.pattern[srcIndex];
-      }
-    }
-    this.shape = {
-      width: newWidth,
-      getHeight: this.shape.getHeight,
-      pattern: newPattern
-    };
+    this.vector = this.vector
+      .map((direction) => isClockwise ? rotationsRight[direction] : rotationsLeft[direction]);
   }
 
   flip() {
     if (this.isLocked) {
       return;
     }
-    for (let y = 0; y < this.shape.getHeight(); y++) {
-      for (let x = 0; x < this.shape.width / 2; x++) {
-        const srcIndex = y * this.shape.width + x;
-        const newIndex = (y + 1) * this.shape.width - x - 1;
-        [this.shape.pattern[newIndex], this.shape.pattern[srcIndex]] =
-          [this.shape.pattern[srcIndex], this.shape.pattern[newIndex]];
-      }
-    }
+    this.vector = this.vector.map((direction) => flip[direction]);
   }
 
   getPrintablePattern() {
+    const shape = this.getShape();
     let result = '';
-    for (let y = 0; y < this.shape.getHeight(); y++) {
-      result += '\n' + this.shape.pattern
-        .slice(y * this.shape.width, (y + 1) * this.shape.width)
+    for (let y = 0; y < shape.height; y++) {
+      result += '\n' + shape.pattern
+        .slice(y * shape.width, (y + 1) * shape.width)
         .map((cell) => cell ? humanReadableTrue : humanReadableFalse)
         .join('');
     }
@@ -155,112 +202,66 @@ export class Figure {
 
 export function createFigures(): Record<FigureName, Figure> {
   return {
-    F: new Figure('F', 3, {
+    F: new Figure('F',  {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      '.', 'X', 'X',
-      'X', 'X', '.',
-      '.', 'X', '.'
-    ]),
-    I: new Figure('I', 5, {
+    },['R', 'D', 'U', 'U', 'R']),
+    I: new Figure('I',  {
       isFlippable: false,
       isRotatable90: true,
       isRotatable180: false
-    }, ['X', 'X', 'X', 'X', 'X']),
-    L: new Figure('L', 2, {
+    }, ['R', 'R', 'R', 'R']),
+    L: new Figure('L',  {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', 'X',
-      'X', '.',
-      'X', '.',
-      'X', '.'
-    ]),
-    N: new Figure('N', 2, {
+    }, ['U', 'U', 'U', 'R']),
+    N: new Figure('N',  {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      '.', 'X',
-      'X', 'X',
-      'X', '.',
-      'X', '.'
-    ]),
-    P: new Figure('P', 2, {
+    }, ['U', 'U', 'R', 'U']),
+    P: new Figure('P',  {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', 'X',
-      'X', 'X',
-      'X', '.'
-    ]),
-    T: new Figure('T', 3, {
+    }, ['R', 'D', 'L', 'D']),
+    T: new Figure('T', {
       isFlippable: false,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', 'X', 'X',
-      '.', 'X', '.',
-      '.', 'X', '.'
-    ]),
-    U: new Figure('U', 3, {
+    }, ['R', 'R', 'L', 'D', 'D']),
+    U: new Figure('U', {
       isFlippable: false,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', '.', 'X',
-      'X', 'X', 'X'
-    ]),
-    V: new Figure('V', 3, {
+    }, ['D', 'R', 'R', 'U']),
+    V: new Figure('V', {
       isFlippable: false,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', '.', '.',
-      'X', '.', '.',
-      'X', 'X', 'X'
-    ]),
-    W: new Figure('W', 3, {
+    }, ['D', 'D', 'R', 'R']),
+    W: new Figure('W', {
       isFlippable: false,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      'X', '.', '.',
-      'X', 'X', '.',
-      '.', 'X', 'X'
-    ]),
-    X: new Figure('X', 3, {
+    }, ['D', 'R', 'D', 'R']),
+    X: new Figure('X', {
       isFlippable: false,
       isRotatable90: false,
       isRotatable180: false
-    }, [
-      '.', 'X', '.',
-      'X', 'X', 'X',
-      '.', 'X', '.'
-    ]),
-    Y: new Figure('Y', 2, {
+    }, ['R', 'U', 'D', 'R', 'L', 'D']),
+    Y: new Figure('Y', {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: true
-    }, [
-      '.', 'X',
-      'X', 'X',
-      '.', 'X',
-      '.', 'X'
-    ]),
-    Z: new Figure('Z', 3, {
+    }, ['R', 'U', 'D', 'D', 'D']),
+    Z: new Figure('Z', {
       isFlippable: true,
       isRotatable90: true,
       isRotatable180: false
-    }, [
-      'X', 'X', '.',
-      '.', 'X', '.',
-      '.', 'X', 'X'
-    ])
+    }, ['R', 'D', 'D', 'R'])
   };
 }
 
