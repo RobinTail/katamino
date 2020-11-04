@@ -125,4 +125,59 @@ describe('Board', () => {
       [4, 9, 10, 15, 14, 19, 20, 21, 22, 23, 24, 17, 16]
     ], board.getPrintable());
   });
+
+  it('can be solved in packing mode', () => {
+    const board = new Board(12);
+    const figures = createFigures();
+    if (board.canPlaceFigure(0, 3, figures.L)) {
+      board.placeFigure(0, 3, figures.L);
+    }
+    figures.W.rotate();
+    if (board.canPlaceFigure(0, 4, figures.W)) {
+      board.placeFigure(0, 4, figures.W);
+    }
+    figures.U.rotate();
+    figures.U.rotate();
+    if (board.canPlaceFigure(3, 2, figures.U)) {
+      board.placeFigure(3, 2, figures.U);
+    }
+    figures.N.rotate(true);
+    if (board.canPlaceFigure(2, 0, figures.N)) {
+      board.placeFigure(2, 0, figures.N);
+    }
+    figures.P.flip();
+    figures.P.rotate(true);
+    if (board.canPlaceFigure(4, 4, figures.P)) {
+      board.placeFigure(4, 4, figures.P);
+    }
+    if (board.canPlaceFigure(4, 2, figures.Z)) {
+      board.placeFigure(4, 2, figures.Z);
+    }
+    if (board.canPlaceFigure(5, 0, figures.T)) {
+      board.placeFigure(5, 0, figures.T);
+    }
+    figures.Y.flip();
+    figures.Y.rotate();
+    if (board.canPlaceFigure(7, 2, figures.Y)) {
+      board.placeFigure(7, 2, figures.Y);
+    }
+    if (board.canPlaceFigure(7, 1, figures.X)) {
+      board.placeFigure(7, 1, figures.X);
+    }
+    if (board.canPlaceFigure(7, 4, figures.I)) {
+      board.placeFigure(7, 4, figures.I);
+    }
+    figures.F.flip();
+    figures.F.rotate();
+    figures.F.rotate();
+    if (board.canPlaceFigure(9, 2, figures.F)) {
+      board.placeFigure(9, 2, figures.F);
+    }
+    figures.V.rotate();
+    figures.V.rotate();
+    if (board.canPlaceFigure(11, 2, figures.V)) {
+      board.placeFigure(11, 2, figures.V);
+    }
+    expect(board._reserved).to.be.deep.eq(Array(12 * 5).fill(true));
+  });
 });
