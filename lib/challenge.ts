@@ -87,6 +87,23 @@ export const challenges: Record<ChallengeName, Challenge<ChallengeName>> = {
   Ultimate: ultimate
 }
 
+export function getChallengeNames(): ChallengeName[] {
+  return Object.keys(challenges) as ChallengeName[];
+}
+
+export function getBoardSizes(challengeName: ChallengeName): number[] {
+  let result: number[] = [];
+  for (let i = challenges[challengeName].minSize; i <= challenges[challengeName].maxSize; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
+export function getSetNames<C extends ChallengeName>(challengeName: C): SetName<C>[] {
+  const challenge = challenges[challengeName];
+  return Object.keys(challenge.sets) as SetName<C>[];
+}
+
 export function loadLevel<C extends ChallengeName>(challengeName: C, boardSize: number, setName: SetName<C>): Level {
   const challenge = challenges[challengeName];
   let set: FigureName[] = challenge.sets[setName];

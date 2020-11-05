@@ -1,6 +1,12 @@
 import {Board} from './lib/board';
 import {Figure} from './lib/figure';
-import {ChallengeName, challenges, loadLevel, SetName} from './lib/challenge';
+import {
+  getBoardSizes,
+  getChallengeNames,
+  getSetNames,
+  loadLevel,
+} from './lib/challenge';
+import * as prompts from 'prompts';
 
 function findPlace(board: Board, figures: Figure[]): boolean {
   const figure = figures.shift();
@@ -43,16 +49,48 @@ function findPlace(board: Board, figures: Figure[]): boolean {
   return isPlaced;
 }
 
+async function askLevel() {
+  const challengeQuestion = await prompts({
+    type: 'select',
+    name: 'challengeName',
+    message: 'Select challenge',
+    choices: getChallengeNames().map((name) => ({
+      title: name,
+      value: name
+    }))
+  });
+  const sizeQuestion = await prompts({
+      type: 'select',
+      name: 'size',
+      message: 'Select board size',
+      choices: getBoardSizes(challengeQuestion.challengeName).map((size) => ({
+        title: `${size}`,
+        value: size
+      }))
+  });
+  const setQuestion = await prompts({
+    type: 'select',
+    name: 'setName',
+    message: 'Select the set of figures',
+    choices: getSetNames(challengeQuestion.challengeName).map((name) => ({
+      title: name,
+      value: name
+    }))
+  });
+  type ArrayElement<A> = A extends (infer T)[] ? T : never
+  return {
+    challengeName: challengeQuestion.challengeName as ArrayElement<ReturnType<typeof getChallengeNames>>,
+    size: sizeQuestion.size as ArrayElement<ReturnType<typeof getBoardSizes>>,
+    setName: setQuestion.setName as ArrayElement<ReturnType<typeof getSetNames>>,
+  };
+}
 
-Object.values(challenges).forEach(({name: challengeName, minSize, maxSize, sets}) => {
-  for (let size = minSize; size <= maxSize; size++) {
-    Object.keys(sets).forEach((setName) => {
-      const {name: levelName, board, figures} = loadLevel(challengeName, size, setName as SetName<ChallengeName>);
-      console.log(`Board ${board.width}x${board.height}, Level ${levelName}`);
-      console.log(`Available figures: ${figures.map((figure) => figure.name).join(', ')}`);
-      //console.log(board.getPrintable());
-      findPlace(board, figures);
-      console.log(board.getPrintable());
-    })
-  }
+askLevel().then(({challengeName, size, setName}) => {
+  const {name: levelName, board, figures} = loadLevel(challengeName, size, setName);
+  console.log(`Board ${board.width}x${board.height}, Level ${levelName}`);
+  console.log(`Available figures: ${figures.map((figure) => figure.name).join(', ')}`);
+  console.log(board.getPrintable(), '\nSolving...');
+  findPlace(board, figures);
+  console.log(board.getPrintable());
 });
+
