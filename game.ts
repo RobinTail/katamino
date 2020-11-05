@@ -1,10 +1,11 @@
 import {Board} from './lib/board';
 import {Figure} from './lib/figure';
 import {
+  ChallengeName,
   getBoardSizes,
   getChallengeNames,
   getSetNames,
-  loadLevel,
+  loadLevel, SetName,
 } from './lib/challenge';
 import * as prompts from 'prompts';
 
@@ -77,11 +78,10 @@ async function askLevel() {
       value: name
     }))
   });
-  type ArrayElement<A> = A extends (infer T)[] ? T : never
   return {
-    challengeName: challengeQuestion.challengeName as ArrayElement<ReturnType<typeof getChallengeNames>>,
-    size: sizeQuestion.size as ArrayElement<ReturnType<typeof getBoardSizes>>,
-    setName: setQuestion.setName as ArrayElement<ReturnType<typeof getSetNames>>,
+    challengeName: challengeQuestion.challengeName as ChallengeName,
+    size: sizeQuestion.size as number,
+    setName: setQuestion.setName as SetName<ChallengeName>,
   };
 }
 
