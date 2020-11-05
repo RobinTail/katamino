@@ -63,35 +63,24 @@ export class Figure {
   /**
    * Walks through figure vector path with callback
    * Returns true if all callbacks returned true
-   * @param initialX
-   * @param initialY
+   * @param x
+   * @param y
    * @param cb should return true if iteration was successful, false — stops walking
    * @return boolean
    */
-  walk(initialX: number, initialY: number, cb: (x: number, y: number) => boolean): boolean {
-    let x = initialX;
-    let y = initialY;
-    let success = cb(x, y);
-    if (!success) {
+  walk(x: number, y: number, cb: (x: number, y: number) => boolean): boolean {
+    if (!cb(x, y)) {
       return false;
     }
+    const actions: Record<Direction, () => void> = {
+      R: () => {x++;},
+      L: () => {x--;},
+      D: () => {y++;},
+      U: () => {y--;}
+    };
     for (let cell of this.vector) {
-      switch (cell) {
-        case 'R':
-          x++;
-          break;
-        case 'L':
-          x--;
-          break;
-        case 'D':
-          y++;
-          break;
-        case 'U':
-          y--;
-          break;
-      }
-      success = cb(x, y);
-      if (!success) {
+      actions[cell]();
+      if (!cb(x, y)) {
         return false;
       }
     }
